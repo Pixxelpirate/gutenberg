@@ -39,8 +39,8 @@ const DEFAULT_POST_BASE = {
 	page: 1,
 	perPage: 20,
 	sort: {
-		field: 'date',
-		direction: 'desc',
+		field: 'title',
+		direction: 'asc',
 	},
 	titleField: 'title',
 	mediaField: 'featured_media',
