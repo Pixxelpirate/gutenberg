@@ -97,10 +97,12 @@ function PostEditForm( { postType, postId } ) {
 
 	const onChange = ( edits ) => {
 		for ( const id of ids ) {
+			const editedRecord =
+				ids.length > 1 ? records.find( ( r ) => r.id === +id ) : record;
 			if (
 				edits.status &&
 				edits.status !== 'future' &&
-				record?.status === 'future' &&
+				editedRecord?.status === 'future' &&
 				new Date( record.date ) > new Date()
 			) {
 				edits.date = null;
@@ -108,7 +110,7 @@ function PostEditForm( { postType, postId } ) {
 			if (
 				edits.status &&
 				edits.status === 'private' &&
-				record.password
+				editedRecord.password
 			) {
 				edits.password = '';
 			}
