@@ -16,9 +16,6 @@ Every store has a private API for registering private selectors/actions:
 
 ## blocks
 
-Private exports:
-- `isUnmodifiedBlockContent` (added Sep 2024, one usage in `block-editor`)
-
 ### `core/blocks` store
 
 Private actions:
@@ -99,8 +96,8 @@ Private exports:
 - `useHasImageSettingsPanel`
 - `useHasTypographyPanel`
 - `useSettingsForBlockElement`
-- `ExperimentalBlockCanvas`
-- `ExperimentalBlockEditorProvider`
+- `ExperimentalBlockCanvas`: version of public `BlockCanvas` that has several extra props: `contentRef`, `shouldIframe`, `iframeProps`.
+- `ExperimentalBlockEditorProvider`: version of public `BlockEditorProvider` that filters out several private/experimental settings. See also `__experimentalUpdateSettings`.
 - `getDuotoneFilter`
 - `getRichTextValues`
 - `PrivateQuickInserter`
@@ -128,11 +125,11 @@ Private exports:
 - `globalStylesLinksDataKey`
 - `selectBlockPatternsKey`
 - `requiresWrapperOnCopy`
-- `PrivateRichText`
-- `PrivateInserterLibrary`
+- `PrivateRichText`: has an extra prop `readOnly` added in #58916 and #60327 (Feb and Mar 2024).
+- `PrivateInserterLibrary`: has an extra prop `onPatternCategorySelection` added in #62130 (May 2024).
 - `reusableBlocksSelectKey`
-- `PrivateBlockPopover`
-- `PrivatePublishDateTimePicker`
+- `PrivateBlockPopover`: has two extra props, `__unstableContentRef` and `__unstablePopoverSlot`.
+- `PrivatePublishDateTimePicker`: version of public `PublishDateTimePicker` that has two extra props: `isCompact` and `showPopoverHeaderActions`.
 - `useSpacingSizes`
 - `useBlockDisplayTitle`
 - `__unstableBlockStyleVariationOverridesWithConfig`
@@ -144,7 +141,7 @@ Private exports:
 ### `core/block-editor` store
 
 Private actions:
-- `__experimentalUpdateSettings`
+- `__experimentalUpdateSettings`: version of public `updateSettings` action that filters out some private/experimental settings.
 - `clearBlockRemovalPrompt`
 - `deleteStyleOverride`
 - `ensureDefaultBlock`
