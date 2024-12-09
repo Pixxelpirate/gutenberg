@@ -1,4 +1,9 @@
 /**
+ * External dependencies
+ */
+import clsx from 'clsx';
+
+/**
  * WordPress dependencies
  */
 import { Button, Flex, FlexItem } from '@wordpress/components';
@@ -29,18 +34,24 @@ function identity( values ) {
 /**
  * Renders the component for managing saved states of entities.
  *
- * @param {Object}   props              The component props.
- * @param {Function} props.close        The function to close the dialog.
- * @param {boolean}  props.renderDialog Whether to render the component with modal dialog behavior.
+ * @param {Object}   props                     The component props.
+ * @param {Function} props.close               The function to close the dialog.
+ * @param {boolean}  props.renderDialog        Whether to render the component with modal dialog behavior.
+ * @param {boolean}  props.isWithinModalDialog Whether this component is rendered within a Modal component.
  *
  * @return {React.ReactNode} The rendered component.
  */
-export default function EntitiesSavedStates( { close, renderDialog } ) {
+export default function EntitiesSavedStates( {
+	close,
+	renderDialog,
+	isWithinModalDialog,
+} ) {
 	const isDirtyProps = useIsDirty();
 	return (
 		<EntitiesSavedStatesExtensible
 			close={ close }
 			renderDialog={ renderDialog }
+			isWithinModalDialog={ isWithinModalDialog }
 			{ ...isDirtyProps }
 		/>
 	);
@@ -60,6 +71,7 @@ export default function EntitiesSavedStates( { close, renderDialog } ) {
  * @param {boolean}  props.isDirty               Flag indicating if there are dirty entities.
  * @param {Function} props.setUnselectedEntities Function to set unselected entities.
  * @param {Array}    props.unselectedEntities    Array of unselected entities.
+ * @param {boolean}  props.isWithinModalDialog   Whether this component is rendered within a Modal component.
  *
  * @return {React.ReactNode} The rendered component.
  */
@@ -74,6 +86,7 @@ export function EntitiesSavedStatesExtensible( {
 	isDirty,
 	setUnselectedEntities,
 	unselectedEntities,
+	isWithinModalDialog,
 } ) {
 	const saveButtonRef = useRef();
 	const { saveDirtyEntities } = unlock( useDispatch( editorStore ) );
@@ -115,46 +128,57 @@ export function EntitiesSavedStatesExtensible( {
 		'description'
 	);
 
+	const actionButtons = (
+		<>
+			<FlexItem
+				isBlock={ isWithinModalDialog ? false : true }
+				as={ Button }
+				variant={ isWithinModalDialog ? 'tertiary' : 'secondary' }
+				size={ isWithinModalDialog ? undefined : 'compact' }
+				onClick={ dismissPanel }
+			>
+				{ __( 'Cancel' ) }
+			</FlexItem>
+			<FlexItem
+				isBlock={ isWithinModalDialog ? false : true }
+				as={ Button }
+				ref={ saveButtonRef }
+				variant="primary"
+				size={ isWithinModalDialog ? undefined : 'compact' }
+				disabled={ ! saveEnabled }
+				accessibleWhenDisabled
+				onClick={ () =>
+					saveDirtyEntities( {
+						onSave,
+						dirtyEntityRecords,
+						entitiesToSkip: unselectedEntities,
+						close,
+					} )
+				}
+				className="editor-entities-saved-states__save-button"
+				expanded={ isWithinModalDialog ? false : true }
+			>
+				{ saveLabel }
+			</FlexItem>
+		</>
+	);
+
 	return (
 		<div
 			ref={ renderDialog ? saveDialogRef : undefined }
 			{ ...( renderDialog && saveDialogProps ) }
-			className="entities-saved-states__panel"
+			className={ clsx( 'entities-saved-states__panel', {
+				'is-within-modal-dialog': isWithinModalDialog,
+			} ) }
 			role={ renderDialog ? 'dialog' : undefined }
 			aria-labelledby={ renderDialog ? dialogLabel : undefined }
 			aria-describedby={ renderDialog ? dialogDescription : undefined }
 		>
-			<Flex className="entities-saved-states__panel-header" gap={ 2 }>
-				<FlexItem
-					isBlock
-					as={ Button }
-					variant="secondary"
-					size="compact"
-					onClick={ dismissPanel }
-				>
-					{ __( 'Cancel' ) }
-				</FlexItem>
-				<FlexItem
-					isBlock
-					as={ Button }
-					ref={ saveButtonRef }
-					variant="primary"
-					size="compact"
-					disabled={ ! saveEnabled }
-					accessibleWhenDisabled
-					onClick={ () =>
-						saveDirtyEntities( {
-							onSave,
-							dirtyEntityRecords,
-							entitiesToSkip: unselectedEntities,
-							close,
-						} )
-					}
-					className="editor-entities-saved-states__save-button"
-				>
-					{ saveLabel }
-				</FlexItem>
-			</Flex>
+			{ ! isWithinModalDialog && (
+				<Flex className="entities-saved-states__panel-header" gap={ 2 }>
+					{ actionButtons }
+				</Flex>
+			) }
 
 			<div className="entities-saved-states__text-prompt">
 				<div
@@ -162,7 +186,7 @@ export function EntitiesSavedStatesExtensible( {
 					id={ renderDialog ? dialogLabel : undefined }
 				>
 					<strong className="entities-saved-states__text-prompt--header">
-						{ __( 'Are you ready to save?' ) }
+						{ __( 'xxAre you ready to save?' ) }
 					</strong>
 					{ additionalPrompt }
 				</div>
@@ -194,6 +218,12 @@ export function EntitiesSavedStatesExtensible( {
 					/>
 				);
 			} ) }
+
+			{ isWithinModalDialog && (
+				<Flex direction="row" justify="flex-end">
+					{ actionButtons }
+				</Flex>
+			) }
 		</div>
 	);
 }

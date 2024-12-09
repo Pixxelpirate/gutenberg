@@ -31,7 +31,11 @@ const { EntitiesSavedStatesExtensible, NavigableRegion } =
 	unlock( privateApis );
 const { useLocation } = unlock( routerPrivateApis );
 
-const EntitiesSavedStatesForPreview = ( { onClose, renderDialog } ) => {
+const EntitiesSavedStatesForPreview = ( {
+	onClose,
+	renderDialog,
+	isWithinModalDialog,
+} ) => {
 	const isDirtyProps = useEntitiesSavedStatesIsDirty();
 	let activateSaveLabel;
 	if ( isDirtyProps.isDirty ) {
@@ -76,22 +80,32 @@ const EntitiesSavedStatesForPreview = ( { onClose, renderDialog } ) => {
 				saveEnabled: true,
 				saveLabel: activateSaveLabel,
 				renderDialog,
+				isWithinModalDialog,
 			} }
 		/>
 	);
 };
 
-const _EntitiesSavedStates = ( { onClose, renderDialog } ) => {
+const _EntitiesSavedStates = ( {
+	onClose,
+	renderDialog,
+	isWithinModalDialog,
+} ) => {
 	if ( isPreviewingTheme() ) {
 		return (
 			<EntitiesSavedStatesForPreview
 				onClose={ onClose }
 				renderDialog={ renderDialog }
+				isWithinModalDialog={ isWithinModalDialog }
 			/>
 		);
 	}
 	return (
-		<EntitiesSavedStates close={ onClose } renderDialog={ renderDialog } />
+		<EntitiesSavedStates
+			close={ onClose }
+			renderDialog={ renderDialog }
+			isWithinModalDialog={ isWithinModalDialog }
+		/>
 	);
 };
 
@@ -135,7 +149,7 @@ export default function SavePanel() {
 					'Save site, content, and template changes'
 				) }
 			>
-				<_EntitiesSavedStates onClose={ onClose } />
+				<_EntitiesSavedStates onClose={ onClose } isWithinModalDialog />
 			</Modal>
 		) : null;
 	}
