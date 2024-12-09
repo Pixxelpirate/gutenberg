@@ -47,11 +47,13 @@ type DataViewsProps< Item > = {
 	onClickItem?: ( item: Item ) => void;
 	isItemClickable?: ( item: Item ) => boolean;
 	header?: ReactNode;
+	getItemLevel?: ( item: Item ) => number;
 } & ( Item extends ItemWithId
 	? { getItemId?: ( item: Item ) => string }
 	: { getItemId: ( item: Item ) => string } );
 
 const defaultGetItemId = ( item: ItemWithId ) => item.id;
+const defaultGetItemLevel = ( item: any ) => item.level;
 const defaultIsItemClickable = () => true;
 const EMPTY_ARRAY: any[] = [];
 
@@ -64,6 +66,7 @@ export default function DataViews< Item >( {
 	actions = EMPTY_ARRAY,
 	data,
 	getItemId = defaultGetItemId,
+	getItemLevel = defaultGetItemLevel,
 	isLoading = false,
 	paginationInfo,
 	defaultLayouts,
@@ -115,6 +118,7 @@ export default function DataViews< Item >( {
 				openedFilter,
 				setOpenedFilter,
 				getItemId,
+				getItemLevel,
 				isItemClickable,
 				onClickItem,
 			} }

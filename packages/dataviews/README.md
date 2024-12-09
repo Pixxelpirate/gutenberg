@@ -87,6 +87,21 @@ Example:
 }
 ```
 
+#### `getItemLevel`: `function`
+
+A function that receives an item and returns its hierarchical level.
+
+It's optional. The field will get a default implementation by `DataViews` that returns the value of the `item[ level ]`.
+
+Example:
+
+```js
+// Custom getItemLevel function.
+{
+	getItemLevel={ ( item ) => item.level.number }
+}
+```
+
 #### `fields`: `Object[]`
 
 The fields describe the visible items for each record in the dataset and how they behave (how to sort them, display them, etc.). See "Fields API" for a description of every property.

@@ -356,6 +356,11 @@ export interface ViewTable extends ViewBase {
 		 * The density of the view.
 		 */
 		density?: Density;
+
+		/**
+		 * Switch on/off hierarchical sorting.
+		 */
+		hierarchicalSort?: boolean;
 	};
 }
 
@@ -480,6 +485,7 @@ export interface ViewBaseProps< Item > {
 	data: Item[];
 	fields: NormalizedField< Item >[];
 	getItemId: ( item: Item ) => string;
+	getItemLevel: ( item: Item ) => number;
 	isLoading?: boolean;
 	onChangeView: ( view: View ) => void;
 	onChangeSelection: SetSelection;
