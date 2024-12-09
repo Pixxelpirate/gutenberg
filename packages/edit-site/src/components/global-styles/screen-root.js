@@ -36,8 +36,8 @@ const { interfaceStore } = unlock( editorPrivateApis );
 const { useLocation } = unlock( routerPrivateApis );
 
 function ScreenRoot() {
-	const { params } = useLocation();
-	const { canvas = 'view' } = params;
+	const { query } = useLocation();
+	const { canvas = 'view' } = query;
 	const {
 		hasVariations,
 		canEditCSS,
