@@ -16,9 +16,13 @@ import usePostContentBlocks from './use-post-content-blocks';
  */
 export default function DisableNonPageContentBlocks() {
 	const contentOnlyIds = usePostContentBlocks();
-	const templateParts = useSelect( ( select ) => {
-		const { getBlocksByName } = select( blockEditorStore );
-		return getBlocksByName( 'core/template-part' );
+	const { templateParts, isNavigationMode } = useSelect( ( select ) => {
+		const { getBlocksByName, isNavigationMode: _isNavigationMode } =
+			select( blockEditorStore );
+		return {
+			templateParts: getBlocksByName( 'core/template-part' ),
+			isNavigationMode: _isNavigationMode(),
+		};
 	}, [] );
 	const disabledIds = useSelect(
 		( select ) => {
@@ -41,8 +45,10 @@ export default function DisableNonPageContentBlocks() {
 			for ( const clientId of contentOnlyIds ) {
 				setBlockEditingMode( clientId, 'contentOnly' );
 			}
-			for ( const clientId of templateParts ) {
-				setBlockEditingMode( clientId, 'contentOnly' );
+			if ( ! isNavigationMode ) {
+				for ( const clientId of templateParts ) {
+					setBlockEditingMode( clientId, 'contentOnly' );
+				}
 			}
 			for ( const clientId of disabledIds ) {
 				setBlockEditingMode( clientId, 'disabled' );
@@ -55,15 +61,23 @@ export default function DisableNonPageContentBlocks() {
 				for ( const clientId of contentOnlyIds ) {
 					unsetBlockEditingMode( clientId );
 				}
-				for ( const clientId of templateParts ) {
-					unsetBlockEditingMode( clientId );
+				if ( ! isNavigationMode ) {
+					for ( const clientId of templateParts ) {
+						unsetBlockEditingMode( clientId );
+					}
 				}
 				for ( const clientId of disabledIds ) {
 					unsetBlockEditingMode( clientId );
 				}
 			} );
 		};
-	}, [ templateParts, contentOnlyIds, disabledIds, registry ] );
+	}, [
+		templateParts,
+		contentOnlyIds,
+		disabledIds,
+		isNavigationMode,
+		registry,
+	] );
 
 	return null;
 }
