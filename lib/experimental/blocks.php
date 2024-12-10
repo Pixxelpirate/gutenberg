@@ -151,6 +151,12 @@ function gutenberg_block_core_query_add_url_filtering( $query, $block ) {
 }
 add_filter( 'query_loop_block_query_vars', 'gutenberg_block_core_query_add_url_filtering', 10, 2 );
 
+/**
+ * Adds the search query to Query blocks for the inherited queries if the instant search experiment is enabled.
+ *
+ * @param WP_Query $query The query object.
+ * @return void
+ */
 function gutenberg_block_core_query_add_search_query_filtering( $query ) {
 
 	// if the query is not the main query, return
