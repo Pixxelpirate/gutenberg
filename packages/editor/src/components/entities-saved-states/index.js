@@ -156,7 +156,6 @@ export function EntitiesSavedStatesExtensible( {
 					} )
 				}
 				className="editor-entities-saved-states__save-button"
-				expanded={ isWithinModalDialog ? false : true }
 			>
 				{ saveLabel }
 			</FlexItem>
@@ -186,11 +185,14 @@ export function EntitiesSavedStatesExtensible( {
 					id={ renderDialog ? dialogLabel : undefined }
 				>
 					<strong className="entities-saved-states__text-prompt--header">
-						{ __( 'xxAre you ready to save?' ) }
+						{ __( 'Are you ready to save?' ) }
 					</strong>
 					{ additionalPrompt }
 				</div>
-				<p id={ renderDialog ? dialogDescription : undefined }>
+				<p
+					id={ renderDialog ? dialogDescription : undefined }
+					className="entities-saved-states__text-prompt--changes-count"
+				>
 					{ isDirty
 						? createInterpolateElement(
 								sprintf(
@@ -220,7 +222,11 @@ export function EntitiesSavedStatesExtensible( {
 			} ) }
 
 			{ isWithinModalDialog && (
-				<Flex direction="row" justify="flex-end">
+				<Flex
+					direction="row"
+					justify="flex-end"
+					className="entities-saved-states__panel-footer"
+				>
 					{ actionButtons }
 				</Flex>
 			) }
