@@ -6,7 +6,10 @@ import {
 	__experimentalVStack as VStack,
 	TextControl,
 } from '@wordpress/components';
-import type { DataFormControlProps } from '@wordpress/dataviews';
+import type {
+	DataFormControlProps,
+	WithBulkEditing,
+} from '@wordpress/dataviews';
 import { useState } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
 
@@ -15,7 +18,10 @@ import { __ } from '@wordpress/i18n';
  */
 import type { BasePost } from '../../types';
 
-function PasswordEdit( { onChange, value }: DataFormControlProps< BasePost > ) {
+function PasswordEdit( {
+	onChange,
+	value,
+}: DataFormControlProps< BasePost > & WithBulkEditing< BasePost > ) {
 	const [ showPassword, setShowPassword ] = useState( !! value );
 
 	const handleTogglePassword = ( newValue: boolean ) => {

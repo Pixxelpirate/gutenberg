@@ -32,7 +32,7 @@ export const TemplateEdit = ( {
 	data,
 	field,
 	onChange,
-}: DataFormControlProps< BasePost, false > ) => {
+}: DataFormControlProps< BasePost > ) => {
 	const { id } = field;
 	const postType = data.type;
 	const postId =

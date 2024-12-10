@@ -7,14 +7,14 @@ import { useCallback } from '@wordpress/element';
 /**
  * Internal dependencies
  */
-import type { DataFormControlProps } from '../types';
+import type { DataFormControlProps, WithBulkEditing } from '../types';
 
 export default function DateTime< Item >( {
 	field,
 	onChange,
 	hideLabelFromVision,
 	value,
-}: DataFormControlProps< Item > ) {
+}: DataFormControlProps< Item > & WithBulkEditing< Item > ) {
 	const { id, label } = field;
 
 	const onChangeControl = useCallback(

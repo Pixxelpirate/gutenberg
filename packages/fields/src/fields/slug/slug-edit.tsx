@@ -27,7 +27,7 @@ const SlugEdit = ( {
 	field,
 	onChange,
 	data,
-}: DataFormControlProps< BasePost, false > ) => {
+}: DataFormControlProps< BasePost > ) => {
 	const { id } = field;
 
 	const slug = field.getValue( { item: data } ) || getSlug( data );

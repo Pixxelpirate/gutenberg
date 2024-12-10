@@ -285,7 +285,7 @@ export const ParentEdit = ( {
 	data,
 	field,
 	onChange,
-}: DataFormControlProps< BasePost, false > ) => {
+}: DataFormControlProps< BasePost > ) => {
 	const { id } = field;
 
 	const homeUrl = useSelect( ( select ) => {

@@ -11,7 +11,7 @@ import type { BasePost } from '../../types';
 import SlugEdit from './slug-edit';
 import SlugView from './slug-view';
 
-const slugField: Field< BasePost, false > = {
+const slugField: Field< BasePost > = {
 	id: 'slug',
 	type: 'text',
 	label: __( 'Slug' ),
