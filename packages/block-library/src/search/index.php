@@ -211,7 +211,15 @@ function render_block_core_search( $attributes, $content, $block ) {
 
 	if ( $enhanced_pagination && $instant_search_enabled && isset( $block->context['queryId'] ) ) {
 
-		wp_interactivity_config( 'core/search', array( 'canonicalURL' => get_permalink() ) );
+		// Get the canonical URL without pagination
+		$canonical_url_no_pagination = get_pagenum_link(1);
+
+		// If we're on a singular post/page, use its permalink instead
+		if (is_singular()) {
+			$canonical_url_no_pagination = get_permalink();
+		}
+
+		wp_interactivity_config( 'core/search', array( 'canonicalURL' => $canonical_url_no_pagination ) );
 
 		$is_inherited = isset( $block->context['query']['inherit'] ) && $block->context['query']['inherit'] && ! empty( $block->context['queryId'] );
 		$search       = '';
@@ -221,11 +229,11 @@ function render_block_core_search( $attributes, $content, $block ) {
 			$search = $block->context['query']['search'];
 		}
 
-		// If the query is defined in the URL, it overrides the block context value if defined
+		// If the query is defined in the URL, it overrides the block context value.
 		if ( $is_inherited ) {
-			$search = empty( $_GET['instant-search'] ) ? '' : sanitize_text_field( $_GET['instant-search'] );
+			$search = empty( $_GET['instant-search'] ) ? $search : sanitize_text_field( $_GET['instant-search'] );
 		} else {
-			$search = empty( $_GET[ 'instant-search-' . $block->context['queryId'] ] ) ? '' : sanitize_text_field( $_GET[ 'instant-search-' . $block->context['queryId'] ] );
+			$search = empty( $_GET[ 'instant-search-' . $block->context['queryId'] ] ) ? $search : sanitize_text_field( $_GET[ 'instant-search-' . $block->context['queryId'] ] );
 		}
 
 		$form_context = array_merge(
