@@ -567,19 +567,19 @@ export default () => {
 			const [ entry ] = each;
 			const { namespace } = entry;
 
-			const list = evaluate( entry );
+			const iterable = evaluate( entry );
+
+			if ( typeof iterable?.[ Symbol.iterator ] !== 'function' ) {
+				return;
+			}
 
 			const itemProp = isNonDefaultDirectiveSuffix( entry )
 				? kebabToCamelCase( entry.suffix )
 				: 'item';
 
-			if ( ! list || ! ( Symbol.iterator in list ) ) {
-				return;
-			}
-
 			const result: VNode< any >[] = [];
 
-			for ( const item of list ) {
+			for ( const item of iterable ) {
 				const itemContext = proxifyContext(
 					proxifyState( namespace, {} ),
 					inheritedValue.client[ namespace ]
