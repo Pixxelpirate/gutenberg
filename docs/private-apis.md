@@ -1,6 +1,8 @@
 # Gutenberg Private APIs
 
-This is an overview of private APIs exposed by Gutenberg packages. Its purpose is to present a picture of how many private APIs we have, and provide information about the stability of each API and about the roadmap for its stabilization and making it public.
+This is an overview of private APIs exposed by Gutenberg packages. These APIs are used to implement parts of the Gutenberg editor (Post Editor, Site Editor, Core blocks and others) but are not exposed publicly to plugin authors or authors of custom Gutenberg integrations. Many are supposed to be private permanently, and others have or will have a roadmap to become stable and public.
+
+The purpose of this document is to present a picture of how many private APIs we have, and provide some basic information about what purpose they serve and whether they have a roadmap to become public. Some of them will eventually be reclassified as "experimental" and exposed using a different mechanism.
 
 ## data
 
