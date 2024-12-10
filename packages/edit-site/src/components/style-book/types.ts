@@ -32,7 +32,7 @@ export type StyleBookColorGroup = {
 	origin: string;
 	slug: string;
 	title: string;
-	type: string;
+	type: 'colors' | 'gradients' | 'duotones';
 };
 
 export type Color = { slug: string };
@@ -44,7 +44,9 @@ export type Duotone = {
 
 export type ColorExampleProps = {
 	colors: Color[] | Gradient[];
-	type: string;
+	type: StyleBookColorGroup[ 'type' ];
+	templateColumns?: string | number;
+	itemHeight?: string;
 };
 
 export type ColorOrigin = {

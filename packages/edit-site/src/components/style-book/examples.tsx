@@ -100,7 +100,7 @@ function getOverviewBlockExamples(
 			content: (
 				<ColorExamples
 					colors={ themePalette.colors }
-					type={ colors }
+					type="colors"
 					templateColumns="repeat(auto-fill, minmax( 200px, 1fr ))"
 					itemHeight="32px"
 				/>
@@ -111,7 +111,7 @@ function getOverviewBlockExamples(
 	}
 
 	// Get examples for typography blocks.
-	const typographyBlockExamples: Block[] = [];
+	const typographyBlockExamples: BlockType[] = [];
 
 	if ( getBlockType( 'core/heading' ) ) {
 		const headingBlock = createBlock( 'core/heading', {
