@@ -31,4 +31,5 @@ export default {
 	sort,
 	isValid,
 	Edit: 'integer',
+	supportsBulkEditing: true,
 };

@@ -24,4 +24,5 @@ export default {
 	sort,
 	isValid,
 	Edit: 'text',
+	supportsBulkEditing: true,
 };

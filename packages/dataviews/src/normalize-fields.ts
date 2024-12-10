@@ -64,11 +64,10 @@ export function normalizeFields< Item >(
 			);
 		};
 
-		let supportsBulkEditing = true;
-		// If custom Edit component is passed in we default to false for bulk edit support.
-		if ( typeof field.Edit === 'function' || field.supportsBulkEditing ) {
-			supportsBulkEditing = field.supportsBulkEditing ?? false;
-		}
+		const supportsBulkEditing =
+			field.supportsBulkEditing ||
+			( typeof field.Edit !== 'function' &&
+				fieldTypeDefinition.supportsBulkEditing );
 
 		const render =
 			field.render || ( field.elements ? renderFromElements : getValue );
