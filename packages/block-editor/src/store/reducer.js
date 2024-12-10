@@ -2280,9 +2280,9 @@ function getDerivedBlockEditingModesForTree(
 	// so the default block editing mode is set to disabled.
 	const sectionRootClientId = state.settings?.[ sectionRootClientIdKey ];
 	const sectionClientIds = state.blocks.order.get( sectionRootClientId );
-	const hasDisabledBlocks = state.blockEditingModes
-		.entries()
-		.some( ( [ , mode ] ) => mode === 'disabled' );
+	const hasDisabledBlocks = Array.from( state.blockEditingModes ).some(
+		( [ , mode ] ) => mode === 'disabled'
+	);
 	const templatePartClientIds = [];
 	const syncedPatternClientIds = [];
 
