@@ -16,7 +16,6 @@ const templateField: Field< BasePost > = {
 	label: __( 'Template' ),
 	Edit: TemplateEdit,
 	enableSorting: false,
-	supportsBulkEditing: false,
 };
 
 /**
