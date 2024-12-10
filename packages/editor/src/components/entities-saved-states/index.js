@@ -122,10 +122,13 @@ export function EntitiesSavedStatesExtensible( {
 	const [ saveDialogRef, saveDialogProps ] = useDialog( {
 		onClose: () => dismissPanel(),
 	} );
-	const dialogLabel = useInstanceId( EntitiesSavedStatesExtensible, 'label' );
-	const dialogDescription = useInstanceId(
+	const dialogLabelId = useInstanceId(
 		EntitiesSavedStatesExtensible,
-		'description'
+		'entities-saved-states__panel-label'
+	);
+	const dialogDescriptionId = useInstanceId(
+		EntitiesSavedStatesExtensible,
+		'entities-saved-states__panel-description'
 	);
 
 	const actionButtons = (
@@ -170,8 +173,8 @@ export function EntitiesSavedStatesExtensible( {
 				'is-within-modal-dialog': isWithinModalDialog,
 			} ) }
 			role={ renderDialog ? 'dialog' : undefined }
-			aria-labelledby={ renderDialog ? dialogLabel : undefined }
-			aria-describedby={ renderDialog ? dialogDescription : undefined }
+			aria-labelledby={ renderDialog ? dialogLabelId : undefined }
+			aria-describedby={ renderDialog ? dialogDescriptionId : undefined }
 		>
 			{ ! isWithinModalDialog && (
 				<Flex className="entities-saved-states__panel-header" gap={ 2 }>
@@ -180,34 +183,33 @@ export function EntitiesSavedStatesExtensible( {
 			) }
 
 			<div className="entities-saved-states__text-prompt">
-				<div
-					className="entities-saved-states__text-prompt--header-wrapper"
-					id={ renderDialog ? dialogLabel : undefined }
-				>
-					<strong className="entities-saved-states__text-prompt--header">
+				<div className="entities-saved-states__text-prompt--header-wrapper">
+					<strong
+						id={ renderDialog ? dialogLabelId : undefined }
+						className="entities-saved-states__text-prompt--header"
+					>
 						{ __( 'Are you ready to save?' ) }
 					</strong>
-					{ additionalPrompt }
 				</div>
-				<p
-					id={ renderDialog ? dialogDescription : undefined }
-					className="entities-saved-states__text-prompt--changes-count"
-				>
-					{ isDirty
-						? createInterpolateElement(
-								sprintf(
-									/* translators: %d: number of site changes waiting to be saved. */
-									_n(
-										'There is <strong>%d site change</strong> waiting to be saved.',
-										'There are <strong>%d site changes</strong> waiting to be saved.',
+				<div id={ renderDialog ? dialogDescriptionId : undefined }>
+					{ additionalPrompt }
+					<p className="entities-saved-states__text-prompt--changes-count">
+						{ isDirty
+							? createInterpolateElement(
+									sprintf(
+										/* translators: %d: number of site changes waiting to be saved. */
+										_n(
+											'There is <strong>%d site change</strong> waiting to be saved.',
+											'There are <strong>%d site changes</strong> waiting to be saved.',
+											dirtyEntityRecords.length
+										),
 										dirtyEntityRecords.length
 									),
-									dirtyEntityRecords.length
-								),
-								{ strong: <strong /> }
-						  )
-						: __( 'Select the items you want to save.' ) }
-				</p>
+									{ strong: <strong /> }
+							  )
+							: __( 'Select the items you want to save.' ) }
+					</p>
+				</div>
 			</div>
 
 			{ sortedPartitionedSavables.map( ( list ) => {
