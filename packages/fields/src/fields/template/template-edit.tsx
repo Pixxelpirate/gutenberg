@@ -56,9 +56,9 @@ export const TemplateEdit = ( {
 				select( coreStore )
 			);
 
-			const isPostsPage = getPostsPageId() === +postId;
+			const isPostsPage = +getPostsPageId() === postId;
 			const isFrontPage =
-				postType === 'page' && getHomePage()?.postId === +postId;
+				postType === 'page' && +getHomePage()?.postId === postId;
 
 			const allowSwitchingTemplate = ! isPostsPage && ! isFrontPage;
 
@@ -150,6 +150,10 @@ export const TemplateEdit = ( {
 						variant="tertiary"
 						size="compact"
 						onClick={ onToggle }
+						accessibleWhenDisabled
+						disabled={
+							availableTemplates.length === 0 && value === ''
+						}
 					>
 						{ currentTemplate
 							? getItemTitle( currentTemplate )
@@ -158,14 +162,16 @@ export const TemplateEdit = ( {
 				) }
 				renderContent={ ( { onToggle } ) => (
 					<MenuGroup>
-						<MenuItem
-							onClick={ () => {
-								setShowModal( true );
-								onToggle();
-							} }
-						>
-							{ __( 'Swap template' ) }
-						</MenuItem>
+						{ availableTemplates.length > 0 && (
+							<MenuItem
+								onClick={ () => {
+									setShowModal( true );
+									onToggle();
+								} }
+							>
+								{ __( 'Swap template' ) }
+							</MenuItem>
+						) }
 						{
 							// The default template in a post is indicated by an empty string
 							value !== '' && (
