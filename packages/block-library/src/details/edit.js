@@ -5,12 +5,11 @@ import {
 	RichText,
 	useBlockProps,
 	useInnerBlocksProps,
-	store as blockEditorStore,
 	InspectorControls,
 } from '@wordpress/block-editor';
-import { useSelect } from '@wordpress/data';
 import { PanelBody, ToggleControl } from '@wordpress/components';
 import { __ } from '@wordpress/i18n';
+import { useState } from '@wordpress/element';
 
 const TEMPLATE = [
 	[
@@ -21,27 +20,14 @@ const TEMPLATE = [
 	],
 ];
 
-function DetailsEdit( { attributes, setAttributes, clientId } ) {
+function DetailsEdit( { attributes, setAttributes } ) {
 	const { showContent, summary } = attributes;
 	const blockProps = useBlockProps();
 	const innerBlocksProps = useInnerBlocksProps( blockProps, {
 		template: TEMPLATE,
 		__experimentalCaptureToolbars: true,
 	} );
-
-	// Check if either the block or the inner blocks are selected.
-	const hasSelection = useSelect(
-		( select ) => {
-			const { isBlockSelected, hasSelectedInnerBlock } =
-				select( blockEditorStore );
-			/* Sets deep to true to also find blocks inside the details content block. */
-			return (
-				hasSelectedInnerBlock( clientId, true ) ||
-				isBlockSelected( clientId )
-			);
-		},
-		[ clientId ]
-	);
+	const [ isOpen, setIsOpen ] = useState( showContent );
 
 	return (
 		<>
@@ -59,11 +45,13 @@ function DetailsEdit( { attributes, setAttributes, clientId } ) {
 					/>
 				</PanelBody>
 			</InspectorControls>
-			<details
-				{ ...innerBlocksProps }
-				open={ hasSelection || showContent }
-			>
-				<summary onClick={ ( event ) => event.preventDefault() }>
+			<details { ...innerBlocksProps } open={ isOpen }>
+				<summary
+					onClick={ ( event ) => {
+						event.preventDefault();
+						setIsOpen( ! isOpen );
+					} }
+				>
 					<RichText
 						identifier="summary"
 						aria-label={ __( 'Write summary' ) }
