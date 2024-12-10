@@ -7,14 +7,14 @@ import { useCallback } from '@wordpress/element';
 /**
  * Internal dependencies
  */
-import type { DataFormControlProps, WithBulkEditing } from '../types';
+import type { DataFormControlPropsWithBulkEditing } from '../types';
 
 export default function Text< Item >( {
 	field,
 	onChange,
 	hideLabelFromVision,
 	value,
-}: DataFormControlProps< Item > & WithBulkEditing< Item > ) {
+}: DataFormControlPropsWithBulkEditing< Item, string > ) {
 	const { id, label, placeholder } = field;
 
 	const onChangeControl = useCallback(
@@ -29,7 +29,7 @@ export default function Text< Item >( {
 		<TextControl
 			label={ label }
 			placeholder={ placeholder }
-			value={ value ?? '' }
+			value={ typeof value === 'symbol' ? '' : value ?? '' }
 			onChange={ onChangeControl }
 			__next40pxDefaultSize
 			__nextHasNoMarginBottom

@@ -8,14 +8,14 @@ import { __ } from '@wordpress/i18n';
 /**
  * Internal dependencies
  */
-import type { DataFormControlProps, WithBulkEditing } from '../types';
+import type { DataFormControlPropsWithBulkEditing } from '../types';
 
 export default function Select< Item >( {
 	field,
 	onChange,
 	hideLabelFromVision,
 	value,
-}: DataFormControlProps< Item > & WithBulkEditing< Item > ) {
+}: DataFormControlPropsWithBulkEditing< Item, string | number > ) {
 	const { id, label } = field;
 	const onChangeControl = useCallback(
 		( newValue: any ) =>
@@ -40,7 +40,7 @@ export default function Select< Item >( {
 	return (
 		<SelectControl
 			label={ label }
-			value={ value ?? '' }
+			value={ typeof value === 'symbol' ? '' : value }
 			options={ elements }
 			onChange={ onChangeControl }
 			__next40pxDefaultSize

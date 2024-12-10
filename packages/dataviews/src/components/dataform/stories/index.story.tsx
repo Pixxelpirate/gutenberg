@@ -19,6 +19,7 @@ type SamplePost = {
 	date: string;
 	birthdate: string;
 	password?: string;
+	sticky?: boolean;
 };
 
 const meta = {

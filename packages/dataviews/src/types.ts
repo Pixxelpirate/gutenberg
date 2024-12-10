@@ -184,16 +184,20 @@ export type Fields< Item > = Field< Item >[];
 
 export type Data< Item > = Item[];
 
-export type DataFormControlProps< Item > = {
+export type DataFormControlProps< Item, ValueType = any > = {
 	data: Item;
 	field: NormalizedField< Item >;
 	onChange: ( value: Record< string, any > ) => void;
 	hideLabelFromVision?: boolean;
-	value: any;
+	value?: ValueType;
 };
 
-export type WithBulkEditing< Item > = {
+export type DataFormControlPropsWithBulkEditing< Item, ValueType = any > = Omit<
+	DataFormControlProps< Item, ValueType >,
+	'data' | 'value'
+> & {
 	data: Item | Item[];
+	value?: ValueType | symbol;
 };
 
 export type DataViewRenderFieldProps< Item > = {
