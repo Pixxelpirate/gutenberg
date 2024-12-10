@@ -568,9 +568,15 @@ export default () => {
 			const { namespace } = entry;
 
 			const list = evaluate( entry );
+
 			const itemProp = isNonDefaultDirectiveSuffix( entry )
 				? kebabToCamelCase( entry.suffix )
 				: 'item';
+
+			if ( typeof list?.map !== 'function' ) {
+				return [];
+			}
+
 			return list.map( ( item ) => {
 				const itemContext = proxifyContext(
 					proxifyState( namespace, {} ),
