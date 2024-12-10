@@ -107,7 +107,7 @@ function render_block_core_search( $attributes, $content, $block ) {
 			wp_enqueue_script_module( '@wordpress/block-library/search/view' );
 
 			if ( $instant_search_enabled ) {
-				$input->set_attribute( 'data-wp-bind--value', 'context.search' );
+				$input->set_attribute( 'data-wp-bind--value', 'state.searchGetter' );
 				$input->set_attribute( 'data-wp-on-async--input', 'actions.updateSearch' );
 			}
 		}
@@ -237,6 +237,10 @@ function render_block_core_search( $attributes, $content, $block ) {
 
 		// If the query is defined in the URL, it overrides the block context value.
 		$search = empty( $_GET[ $search_key ] ) ? $search : sanitize_text_field( $_GET[ $search_key ] );
+
+		if ( $is_inherited ) {
+			wp_interactivity_state( 'core/search', array( 'search' => $search ) );
+		}
 
 		$form_context = array_merge(
 			$form_context,

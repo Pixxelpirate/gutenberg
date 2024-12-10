@@ -48,6 +48,10 @@ const { state, actions } = store(
 				}
 				return ctx.isSearchInputVisible;
 			},
+			get searchGetter() {
+				const { isInherited, search } = getContext();
+				return isInherited ? state.search : search;
+			},
 		},
 		actions: {
 			openSearchInput( event ) {
@@ -88,14 +92,18 @@ const { state, actions } = store(
 			*updateSearch( e ) {
 				const { value } = e.target;
 
-				const ctx = getContext();
-
 				// Don't navigate if the search didn't really change.
-				if ( value === ctx.search ) {
+				if ( value === state.searchGetter ) {
 					return;
 				}
 
-				ctx.search = value;
+				const ctx = getContext();
+
+				if ( ctx.isInherited ) {
+					state.search = value;
+				} else {
+					ctx.search = value;
+				}
 
 				// Debounce the search by 300ms to prevent multiple navigations.
 				supersedePreviousSearch?.();
