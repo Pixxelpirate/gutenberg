@@ -14,7 +14,7 @@ import { useDispatch } from '@wordpress/data';
 import { useCallback, useEffect, useRef } from '@wordpress/element';
 import { store as noticesStore } from '@wordpress/notices';
 import { safeDecodeURIComponent } from '@wordpress/url';
-import type { DataFormControlProps } from '@wordpress/dataviews';
+import type { DataFormControlPropsWithoutBulkEditing } from '@wordpress/dataviews';
 import { __ } from '@wordpress/i18n';
 
 /**
@@ -27,7 +27,7 @@ const SlugEdit = ( {
 	field,
 	onChange,
 	data,
-}: DataFormControlProps< BasePost > ) => {
+}: DataFormControlPropsWithoutBulkEditing< BasePost > ) => {
 	const { id } = field;
 
 	const slug = field.getValue( { item: data } ) || getSlug( data );

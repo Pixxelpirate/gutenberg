@@ -109,16 +109,18 @@ export const getItemPriority = ( name: string, searchValue: string ) => {
 
 export function PageAttributesParent( {
 	data,
+	value,
 	onChangeControl,
 }: {
-	data: BasePost;
+	data: BasePost | BasePost[];
+	value?: number | symbol;
 	onChangeControl: ( newValue: number ) => void;
 } ) {
 	const [ fieldValue, setFieldValue ] = useState< null | string >( null );
 
-	const pageId = data.parent;
-	const postId = data.id;
-	const postTypeSlug = data.type;
+	const pageId = typeof value === 'symbol' ? undefined : value;
+	const postId = Array.isArray( data ) ? data[ 0 ].id : data.id;
+	const postTypeSlug = Array.isArray( data ) ? data[ 0 ].type : data.type;
 
 	const { parentPostTitle, pageItems, isHierarchical } = useSelect(
 		( select ) => {
@@ -272,7 +274,7 @@ export function PageAttributesParent( {
 			value={ pageId?.toString() }
 			options={ parentOptions }
 			onFilterValueChange={ debounce(
-				( value: unknown ) => handleKeydown( value as string ),
+				( newValue: unknown ) => handleKeydown( newValue as string ),
 				300
 			) }
 			onChange={ handleChange }
@@ -285,7 +287,8 @@ export const ParentEdit = ( {
 	data,
 	field,
 	onChange,
-}: DataFormControlProps< BasePost > ) => {
+	value,
+}: DataFormControlProps< BasePost, number > ) => {
 	const { id } = field;
 
 	const homeUrl = useSelect( ( select ) => {
@@ -339,6 +342,7 @@ export const ParentEdit = ( {
 					) }
 				</p>
 				<PageAttributesParent
+					value={ value }
 					data={ data }
 					onChangeControl={ onChangeControl }
 				/>

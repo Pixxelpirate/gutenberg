@@ -64,11 +64,6 @@ export function normalizeFields< Item >(
 			);
 		};
 
-		const supportsBulkEditing =
-			field.supportsBulkEditing ||
-			( typeof field.Edit !== 'function' &&
-				fieldTypeDefinition.supportsBulkEditing );
-
 		const render =
 			field.render || ( field.elements ? renderFromElements : getValue );
 
@@ -81,7 +76,7 @@ export function normalizeFields< Item >(
 			sort,
 			isValid,
 			Edit,
-			supportsBulkEditing,
+			supportsBulkEditing: field.supportsBulkEditing ?? true,
 			enableHiding: field.enableHiding ?? true,
 			enableSorting: field.enableSorting ?? true,
 		};

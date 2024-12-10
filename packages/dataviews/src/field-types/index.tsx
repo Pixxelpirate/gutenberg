@@ -46,6 +46,5 @@ export default function getFieldTypeDefinition( type?: FieldType ) {
 			return true;
 		},
 		Edit: () => null,
-		supportsBulkEditing: false,
 	};
 }

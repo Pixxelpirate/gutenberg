@@ -7,14 +7,14 @@ import { useCallback } from '@wordpress/element';
 /**
  * Internal dependencies
  */
-import type { DataFormControlPropsWithBulkEditing } from '../types';
+import type { DataFormControlProps } from '../types';
 
 export default function Text< Item >( {
 	field,
 	onChange,
 	hideLabelFromVision,
 	value,
-}: DataFormControlPropsWithBulkEditing< Item, string > ) {
+}: DataFormControlProps< Item, string > ) {
 	const { id, label, placeholder } = field;
 
 	const onChangeControl = useCallback(

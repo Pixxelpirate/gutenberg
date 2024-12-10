@@ -20,13 +20,15 @@ export const FeaturedImageEdit = ( {
 	field,
 	onChange,
 	value,
-}: DataFormControlProps< BasePost > ) => {
+}: DataFormControlProps< BasePost, number > ) => {
 	const { id } = field;
 
 	const media = useSelect(
 		( select ) => {
 			const { getEntityRecord } = select( coreStore );
-			return getEntityRecord( 'root', 'media', value );
+			return typeof value !== 'symbol'
+				? getEntityRecord( 'root', 'media', value )
+				: undefined;
 		},
 		[ value ]
 	);

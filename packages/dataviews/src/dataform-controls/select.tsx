@@ -8,14 +8,14 @@ import { __ } from '@wordpress/i18n';
 /**
  * Internal dependencies
  */
-import type { DataFormControlPropsWithBulkEditing } from '../types';
+import type { DataFormControlProps } from '../types';
 
 export default function Select< Item >( {
 	field,
 	onChange,
 	hideLabelFromVision,
 	value,
-}: DataFormControlPropsWithBulkEditing< Item, string | number > ) {
+}: DataFormControlProps< Item, string | number > ) {
 	const { id, label } = field;
 	const onChangeControl = useCallback(
 		( newValue: any ) =>

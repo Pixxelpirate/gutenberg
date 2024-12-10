@@ -7,14 +7,14 @@ import { useCallback } from '@wordpress/element';
 /**
  * Internal dependencies
  */
-import type { DataFormControlPropsWithBulkEditing } from '../types';
+import type { DataFormControlProps } from '../types';
 
 export default function Radio< Item >( {
 	field,
 	onChange,
 	hideLabelFromVision,
 	value,
-}: DataFormControlPropsWithBulkEditing< Item, string > ) {
+}: DataFormControlProps< Item, string > ) {
 	const { id, label } = field;
 
 	const onChangeControl = useCallback(

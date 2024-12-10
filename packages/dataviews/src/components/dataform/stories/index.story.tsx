@@ -8,7 +8,7 @@ import { ToggleControl } from '@wordpress/components';
  * Internal dependencies
  */
 import DataForm from '../index';
-import type { Field, Form } from '../../../types';
+import type { DataFormControlProps, Field, Form } from '../../../types';
 
 type SamplePost = {
 	title: string;
@@ -108,7 +108,12 @@ const fields = [
 		id: 'sticky',
 		label: 'Sticky',
 		type: 'integer',
-		Edit: ( { field, onChange, value, hideLabelFromVision } ) => {
+		Edit: ( {
+			field,
+			onChange,
+			value,
+			hideLabelFromVision,
+		}: DataFormControlProps< SamplePost > ) => {
 			const { id } = field;
 			return (
 				<ToggleControl

@@ -25,5 +25,4 @@ export default {
 	sort,
 	isValid,
 	Edit: 'datetime',
-	supportsBulkEditing: true,
 };

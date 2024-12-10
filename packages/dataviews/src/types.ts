@@ -111,7 +111,10 @@ export type Field< Item > = {
 	/**
 	 * Callback used to render an edit control for the field.
 	 */
-	Edit?: ComponentType< DataFormControlProps< Item > > | string;
+	Edit?:
+		| ComponentType< DataFormControlProps< Item > >
+		| ComponentType< DataFormControlPropsWithoutBulkEditing< Item > >
+		| string;
 
 	/**
 	 * Callback used to sort the field.
@@ -170,11 +173,14 @@ export type NormalizedField< Item > = Field< Item > & {
 	header: string | ReactElement;
 	getValue: ( args: { item: Item } ) => any;
 	render: ComponentType< DataViewRenderFieldProps< Item > >;
-	Edit: ComponentType< DataFormControlProps< Item > >;
+	Edit:
+		| ComponentType< DataFormControlProps< Item > >
+		| ComponentType< DataFormControlPropsWithoutBulkEditing< Item > >;
 	sort: ( a: Item, b: Item, direction: SortDirection ) => number;
 	isValid: ( item: Item, context?: ValidationContext ) => boolean;
 	enableHiding: boolean;
 	enableSorting: boolean;
+	supportsBulkEditing: boolean;
 };
 
 /**
@@ -185,19 +191,19 @@ export type Fields< Item > = Field< Item >[];
 export type Data< Item > = Item[];
 
 export type DataFormControlProps< Item, ValueType = any > = {
-	data: Item;
+	data: Item | Item[];
 	field: NormalizedField< Item >;
 	onChange: ( value: Record< string, any > ) => void;
 	hideLabelFromVision?: boolean;
-	value?: ValueType;
+	value?: ValueType | symbol;
 };
 
-export type DataFormControlPropsWithBulkEditing< Item, ValueType = any > = Omit<
-	DataFormControlProps< Item, ValueType >,
-	'data' | 'value'
-> & {
-	data: Item | Item[];
-	value?: ValueType | symbol;
+export type DataFormControlPropsWithoutBulkEditing<
+	Item,
+	ValueType = any,
+> = Omit< DataFormControlProps< Item, ValueType >, 'data' | 'value' > & {
+	data: Item;
+	value?: ValueType;
 };
 
 export type DataViewRenderFieldProps< Item > = {

@@ -6,7 +6,7 @@ import { useCallback, useMemo, useState } from '@wordpress/element';
 import { parse } from '@wordpress/blocks';
 import type { WpTemplate } from '@wordpress/core-data';
 import { store as coreStore } from '@wordpress/core-data';
-import type { DataFormControlProps } from '@wordpress/dataviews';
+import type { DataFormControlPropsWithoutBulkEditing } from '@wordpress/dataviews';
 
 /**
  * Internal dependencies
@@ -32,7 +32,8 @@ export const TemplateEdit = ( {
 	data,
 	field,
 	onChange,
-}: DataFormControlProps< BasePost > ) => {
+	value,
+}: DataFormControlPropsWithoutBulkEditing< BasePost, string > ) => {
 	const { id } = field;
 	const postType = data.type;
 	const postId =
@@ -67,13 +68,13 @@ export const TemplateEdit = ( {
 					? allTemplates.filter(
 							( template ) =>
 								template.is_custom &&
-								template.slug !== data.template &&
+								template.slug !== value &&
 								!! template.content.raw // Skip empty templates.
 					  )
 					: [],
 			};
 		},
-		[ data.template, postId, postType ]
+		[ value, postId, postType ]
 	);
 
 	const templatesAsPatterns = useMemo(
@@ -88,8 +89,6 @@ export const TemplateEdit = ( {
 	);
 
 	const shownTemplates = useAsyncList( templatesAsPatterns );
-
-	const value = field.getValue( { item: data } );
 
 	const currentTemplate = useSelect(
 		( select ) => {
