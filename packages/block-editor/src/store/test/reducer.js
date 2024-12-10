@@ -4015,7 +4015,10 @@ describe( 'state', () => {
 			} );
 
 			it( 'allows content blocks to be disabled explicitly using the block editing mode', () => {
-				const { derivedNavModeBlockEditingModes } = dispatchActions(
+				const {
+					derivedNavModeBlockEditingModes,
+					blockEditingModes: _blockEditingModes,
+				} = dispatchActions(
 					[
 						{
 							type: 'SET_BLOCK_EDITING_MODE',
@@ -4027,6 +4030,15 @@ describe( 'state', () => {
 					initialState
 				);
 
+				// Paragraph 1 is explicitly disabled and omitted from the
+				// derived block editing modes.
+				expect( _blockEditingModes ).toEqual(
+					new Map(
+						Object.entries( {
+							'paragraph-1': 'disabled',
+						} )
+					)
+				);
 				expect( derivedNavModeBlockEditingModes ).toEqual(
 					new Map(
 						Object.entries( {
@@ -4038,7 +4050,6 @@ describe( 'state', () => {
 							'footer-paragraph': 'contentOnly',
 							'section-root': 'contentOnly',
 							'group-1': 'contentOnly',
-							'paragraph-1': 'disabled', // Block explicitly disabled.
 							'group-2': 'disabled',
 							'paragraph-2': 'contentOnly',
 						} )
