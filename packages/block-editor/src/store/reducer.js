@@ -2226,24 +2226,6 @@ function findParentInClientIdsList( state, clientId, clientIds ) {
 }
 
 /**
- * Retrieves the block editing mode of the ancestor block of a given block.
- *
- * @param {Object} state    The current state object.
- * @param {string} clientId The client ID of the block to find the ancestor block for.
- *
- * @return {string|undefined} The block editing mode of the ancestor block, or undefined if not found.
- */
-function getAncestorBlockEditingMode( state, clientId ) {
-	let parent = state.blocks.parents.get( clientId );
-	while ( parent !== undefined ) {
-		if ( state.blockEditingModes.has( parent ) ) {
-			return state.blockEditingModes.get( parent );
-		}
-		parent = state.blocks.parents.get( parent );
-	}
-}
-
-/**
  * Checks if a block has any bindings in its metadata attributes.
  *
  * @param {Object} block The block object to check for bindings.
@@ -2307,14 +2289,32 @@ function getDerivedBlockEditingModesForTree(
 			return;
 		}
 
-		// An explicitly disabled block editing mode cascades to all its children.
-		// Check ancestors of the current block to see if the nearest one with a block
-		// editing mode set is disabled.
+		// Disabled explicit block editing modes are inherited by children.
+		// It's an expensive calculation, so only do it if there are disabled blocks.
 		if ( hasDisabledBlocks ) {
-			const ancestorBlockEditingMode = getAncestorBlockEditingMode(
-				state,
-				clientId
-			);
+			// Look through parents to find one with an explicit block editing mode.
+			let ancestorBlockEditingMode;
+			let parent = state.blocks.parents.get( clientId );
+			while ( parent !== undefined ) {
+				// There's a chance we only just calculated this for the parent,
+				// if so we can return that value for a faster lookup.
+				if ( derivedBlockEditingModes.has( parent ) ) {
+					ancestorBlockEditingMode =
+						derivedBlockEditingModes.get( parent );
+				} else if ( state.blockEditingModes.has( parent ) ) {
+					// Checking the explicit block editing mode will be slower,
+					// as the block editing mode is more likely to be set on a
+					// distant ancestor.
+					ancestorBlockEditingMode =
+						state.blockEditingModes.get( parent );
+				}
+				if ( ancestorBlockEditingMode ) {
+					break;
+				}
+				parent = state.blocks.parents.get( parent );
+			}
+
+			// If the ancestor block editing mode is disabled, it's inherited by the child.
 			if ( ancestorBlockEditingMode === 'disabled' ) {
 				derivedBlockEditingModes.set( clientId, 'disabled' );
 				return;
