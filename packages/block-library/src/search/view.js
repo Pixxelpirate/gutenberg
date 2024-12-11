@@ -89,6 +89,9 @@ const { state, actions } = store(
 					actions.closeSearchInput();
 				}
 			},
+			handleSearchSubmit( e ) {
+				e.preventDefault();
+			},
 			*updateSearch( e ) {
 				const { value } = e.target;
 

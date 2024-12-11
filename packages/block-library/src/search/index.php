@@ -211,6 +211,8 @@ function render_block_core_search( $attributes, $content, $block ) {
 
 	if ( $enhanced_pagination && $instant_search_enabled && isset( $block->context['queryId'] ) ) {
 
+		$form_directives .= ' data-wp-on--submit="actions.handleSearchSubmit"';
+
 		// Get the canonical URL without pagination
 		$canonical_url_no_pagination = get_pagenum_link(1);
 
