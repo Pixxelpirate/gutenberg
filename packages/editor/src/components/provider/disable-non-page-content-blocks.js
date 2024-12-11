@@ -36,15 +36,49 @@ export default function DisableNonPageContentBlocks() {
 
 	const registry = useRegistry();
 
+	// The code here is split into multiple `useEffects` calls.
+	// This is done to avoid setting/unsetting block editing modes multiple times unnecessarily.
+	//
+	// For example, the block editing mode of the root block (clientId: '') only
+	// needs to be set once, not when `contentOnlyIds` or `disabledIds` change.
+	//
+	// It's also unlikely that these different types of blocks are being inserted
+	// or removed at the same time, so using different effects reflects that.
+	useEffect( () => {
+		const { setBlockEditingMode, unsetBlockEditingMode } =
+			registry.dispatch( blockEditorStore );
+
+		setBlockEditingMode( '', 'disabled' );
+
+		return () => {
+			unsetBlockEditingMode( '' );
+		};
+	}, [ registry ] );
+
 	useEffect( () => {
 		const { setBlockEditingMode, unsetBlockEditingMode } =
 			registry.dispatch( blockEditorStore );
 
 		registry.batch( () => {
-			setBlockEditingMode( '', 'disabled' );
 			for ( const clientId of contentOnlyIds ) {
 				setBlockEditingMode( clientId, 'contentOnly' );
 			}
+		} );
+
+		return () => {
+			registry.batch( () => {
+				for ( const clientId of contentOnlyIds ) {
+					unsetBlockEditingMode( clientId );
+				}
+			} );
+		};
+	}, [ contentOnlyIds, registry ] );
+
+	useEffect( () => {
+		const { setBlockEditingMode, unsetBlockEditingMode } =
+			registry.dispatch( blockEditorStore );
+
+		registry.batch( () => {
 			if ( ! isNavigationMode ) {
 				for ( const clientId of templateParts ) {
 					setBlockEditingMode( clientId, 'contentOnly' );
@@ -57,27 +91,33 @@ export default function DisableNonPageContentBlocks() {
 
 		return () => {
 			registry.batch( () => {
-				unsetBlockEditingMode( '' );
-				for ( const clientId of contentOnlyIds ) {
-					unsetBlockEditingMode( clientId );
-				}
 				if ( ! isNavigationMode ) {
 					for ( const clientId of templateParts ) {
 						unsetBlockEditingMode( clientId );
 					}
 				}
+			} );
+		};
+	}, [ templateParts, isNavigationMode, registry, disabledIds ] );
+
+	useEffect( () => {
+		const { setBlockEditingMode, unsetBlockEditingMode } =
+			registry.dispatch( blockEditorStore );
+
+		registry.batch( () => {
+			for ( const clientId of disabledIds ) {
+				setBlockEditingMode( clientId, 'disabled' );
+			}
+		} );
+
+		return () => {
+			registry.batch( () => {
 				for ( const clientId of disabledIds ) {
 					unsetBlockEditingMode( clientId );
 				}
 			} );
 		};
-	}, [
-		templateParts,
-		contentOnlyIds,
-		disabledIds,
-		isNavigationMode,
-		registry,
-	] );
+	}, [ disabledIds, registry ] );
 
 	return null;
 }
