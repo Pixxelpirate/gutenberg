@@ -500,4 +500,37 @@ test.describe( 'data-wp-each', () => {
 		await expect( element ).toHaveText( 'beta' );
 		await expect( callbackRunCount ).toHaveText( '1' );
 	} );
+
+	for ( const testId of [
+		'each-with-unset',
+		'each-with-null',
+		'each-with-undefined',
+	] ) {
+		test( `does not error with non-iterable values: ${ testId }`, async ( {
+			page,
+		} ) => {
+			await expect( page.getByTestId( testId ) ).toBeEmpty();
+		} );
+	}
+
+	for ( const [ testId, values ] of [
+		[ 'each-with-array', [ 'an', 'array' ] ],
+		[ 'each-with-set', [ 'a', 'set' ] ],
+		[ 'each-with-string', [ 's', 't', 'r' ] ],
+		[ 'each-with-generator', [ 'a', 'generator' ] ],
+
+		// TODO: Is there a problem with proxies here?
+		// [ 'each-with-iterator', [ 'implements', 'iterator' ] ],
+	] as const ) {
+		test( `support different each iterable values: ${ testId }`, async ( {
+			page,
+		} ) => {
+			const element = page.getByTestId( testId );
+			for ( const value of values ) {
+				await expect(
+					element.getByText( value, { exact: true } )
+				).toBeVisible();
+			}
+		} );
+	}
 } );
