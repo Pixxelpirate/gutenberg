@@ -174,7 +174,6 @@ export default function BoxInputControl( {
 		! hasPresets ||
 			( ! hasPresetValue && ! isMixed && mergedValue !== undefined )
 	);
-	const showRangeControl = true;
 	const presetIndex = hasPresetValue
 		? getPresetIndexFromValue( mergedValue, presetKey, presets )
 		: undefined;
@@ -240,7 +239,7 @@ export default function BoxInputControl( {
 				</>
 			) }
 
-			{ hasPresets && ! showCustomValueControl && showRangeControl && (
+			{ hasPresets && ! showCustomValueControl && (
 				<FlexedRangeControl
 					__next40pxDefaultSize
 					className="spacing-sizes-control__range-control"
@@ -289,7 +288,6 @@ export default function BoxInputControl( {
 					} }
 					isPressed={ showCustomValueControl }
 					size="small"
-					className="spacing-sizes-control__custom-toggle"
 					iconSize={ 24 }
 				/>
 			) }

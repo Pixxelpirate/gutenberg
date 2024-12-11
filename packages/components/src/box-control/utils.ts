@@ -298,14 +298,17 @@ export function getPresetIndexFromValue(
 	presetKey: string,
 	presets: Preset[]
 ) {
-	if ( ! isValuePreset( value, presetKey ) === undefined ) {
+	if ( ! isValuePreset( value, presetKey ) ) {
 		return undefined;
 	}
 
 	const match = value.match(
 		new RegExp( `^var:preset\\|${ presetKey }\\|(.+)$` )
 	);
-	const slug = match ? match[ 1 ] : undefined;
+	if ( ! match ) {
+		return undefined;
+	}
+	const slug = match[ 1 ];
 	const index = presets.findIndex( ( preset ) => {
 		return preset.slug === slug;
 	} );
