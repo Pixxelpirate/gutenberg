@@ -719,62 +719,58 @@ test.describe( 'Instant Search', () => {
 		} );
 	} );
 
-	test.describe( 'Multiple Inherited (Default) Queries', () => {
-		test.beforeEach( async ( { page } ) => {
-			// Navigate to the home page
-			await page.goto( '/' );
-		} );
-
-		test.beforeAll( async ( { requestUtils } ) => {
+	test.describe( 'Multiple Inherited and Custom Queries', () => {
+		test( 'should keep the search state in sync across multiple inherited queries', async ( {
+			page,
+			requestUtils,
+		} ) => {
 			await requestUtils.updateTemplate( 'wp_template', {
 				slug: 'home',
 				content: `
-<!-- wp:query {"enhancedPagination":true,"queryId":1111,"query":{"inherit":true,"perPage":2,"order":"desc","orderBy":"date"}} -->
-	<div class="wp-block-query" data-testid="default-query-1">
-		<!-- wp:search {"label":"1st-instant-search","buttonText":"Search"} /-->
-			<!-- wp:post-template -->
-				<!-- wp:post-title {"level":3} /-->
-				<!-- wp:post-excerpt /-->
-			<!-- /wp:post-template -->
-			<!-- wp:query-pagination -->
-				<!-- wp:query-pagination-previous /-->
-				<!-- wp:query-pagination-numbers /-->
-				<!-- wp:query-pagination-next /-->
-			<!-- /wp:query-pagination -->
-			<!-- wp:query-no-results -->
-				<!-- wp:paragraph -->
-				<p>No results found.</p>
-				<!-- /wp:paragraph -->
-			<!-- /wp:query-no-results -->
-		</div>
-<!-- /wp:query -->
-
-
-<!-- wp:query {"enhancedPagination":true,"queryId":2222,"query":{"inherit":true,"perPage":2,"order":"desc","orderBy":"date"}} -->
-	<div class="wp-block-query" data-testid="default-query-2">
-		<!-- wp:search {"label":"2nd-instant-search","buttonText":"Search"} /-->
-			<!-- wp:post-template -->
-				<!-- wp:post-title {"level":3} /-->
-				<!-- wp:post-excerpt /-->
-			<!-- /wp:post-template -->
-			<!-- wp:query-pagination -->
-				<!-- wp:query-pagination-previous /-->
-				<!-- wp:query-pagination-numbers /-->
-				<!-- wp:query-pagination-next /-->
-			<!-- /wp:query-pagination -->
-			<!-- wp:query-no-results -->
-				<!-- wp:paragraph -->
-				<p>No results found.</p>
-				<!-- /wp:paragraph -->
-			<!-- /wp:query-no-results -->
-		</div>
-<!-- /wp:query -->`,
+	<!-- wp:query {"enhancedPagination":true,"queryId":1111,"query":{"inherit":true,"perPage":2,"order":"desc","orderBy":"date"}} -->
+		<div class="wp-block-query" data-testid="default-query-1">
+			<!-- wp:search {"label":"1st-instant-search","buttonText":"Search"} /-->
+				<!-- wp:post-template -->
+					<!-- wp:post-title {"level":3} /-->
+					<!-- wp:post-excerpt /-->
+				<!-- /wp:post-template -->
+				<!-- wp:query-pagination -->
+					<!-- wp:query-pagination-previous /-->
+					<!-- wp:query-pagination-numbers /-->
+					<!-- wp:query-pagination-next /-->
+				<!-- /wp:query-pagination -->
+				<!-- wp:query-no-results -->
+					<!-- wp:paragraph -->
+					<p>No results found.</p>
+					<!-- /wp:paragraph -->
+				<!-- /wp:query-no-results -->
+			</div>
+	<!-- /wp:query -->
+	
+	
+	<!-- wp:query {"enhancedPagination":true,"queryId":2222,"query":{"inherit":true,"perPage":2,"order":"desc","orderBy":"date"}} -->
+		<div class="wp-block-query" data-testid="default-query-2">
+			<!-- wp:search {"label":"2nd-instant-search","buttonText":"Search"} /-->
+				<!-- wp:post-template -->
+					<!-- wp:post-title {"level":3} /-->
+					<!-- wp:post-excerpt /-->
+				<!-- /wp:post-template -->
+				<!-- wp:query-pagination -->
+					<!-- wp:query-pagination-previous /-->
+					<!-- wp:query-pagination-numbers /-->
+					<!-- wp:query-pagination-next /-->
+				<!-- /wp:query-pagination -->
+				<!-- wp:query-no-results -->
+					<!-- wp:paragraph -->
+					<p>No results found.</p>
+					<!-- /wp:paragraph -->
+				<!-- /wp:query-no-results -->
+			</div>
+	<!-- /wp:query -->`,
 			} );
-		} );
 
-		test( 'should keep the search state in sync across multiple inherited queries', async ( {
-			page,
-		} ) => {
+			await page.goto( '/' );
+
 			// Get search inputs
 			const firstQuerySearch = page.getByLabel( '1st-instant-search' );
 			const secondQuerySearch = page.getByLabel( '2nd-instant-search' );
@@ -801,6 +797,121 @@ test.describe( 'Instant Search', () => {
 				.getByRole( 'heading', { level: 3 } );
 			await expect( secondQueryPosts ).toHaveCount( 1 );
 			await expect( secondQueryPosts ).toContainText( 'Unique Post' );
+		} );
+
+		test( 'should handle searches independently when a Default and a Custom query are placed in a home template', async ( {
+			page,
+			requestUtils,
+		} ) => {
+			// Set up: Add one inherited and one custom query to the home template
+			await requestUtils.updateTemplate( 'wp_template', {
+				slug: 'home',
+				content: `
+	<!-- wp:query {"enhancedPagination":true,"queryId":1111,"query":{"inherit":true,"perPage":2,"order":"desc","orderBy":"date"}} -->
+		<div class="wp-block-query" data-testid="default-query">
+			<!-- wp:search {"label":"Default Query Search","buttonText":"Search"} /-->
+				<!-- wp:post-template -->
+					<!-- wp:post-title {"level":3} /-->
+					<!-- wp:post-excerpt /-->
+				<!-- /wp:post-template -->
+				<!-- wp:query-pagination -->
+					<!-- wp:query-pagination-previous /-->
+					<!-- wp:query-pagination-numbers /-->
+					<!-- wp:query-pagination-next /-->
+				<!-- /wp:query-pagination -->
+				<!-- wp:query-no-results -->
+					<!-- wp:paragraph -->
+					<p>No results found.</p>
+					<!-- /wp:paragraph -->
+				<!-- /wp:query-no-results -->
+			</div>
+	<!-- /wp:query -->
+	
+	
+	<!-- wp:query {"enhancedPagination":true,"queryId":2222,"query":{"inherit":false,"perPage":2,"order":"desc","orderBy":"date"}} -->
+		<div class="wp-block-query" data-testid="custom-query">
+			<!-- wp:search {"label":"Custom Query Search","buttonText":"Search"} /-->
+				<!-- wp:post-template -->
+					<!-- wp:post-title {"level":3} /-->
+					<!-- wp:post-excerpt /-->
+				<!-- /wp:post-template -->
+				<!-- wp:query-pagination -->
+					<!-- wp:query-pagination-previous /-->
+					<!-- wp:query-pagination-numbers /-->
+					<!-- wp:query-pagination-next /-->
+				<!-- /wp:query-pagination -->
+				<!-- wp:query-no-results -->
+					<!-- wp:paragraph -->
+					<p>No results found.</p>
+					<!-- /wp:paragraph -->
+				<!-- /wp:query-no-results -->
+			</div>
+	<!-- /wp:query -->`,
+			} );
+
+			await page.goto( '/' );
+
+			// Get search inputs
+			const defaultQuerySearch = page.getByLabel(
+				'Default Query Search'
+			);
+			const customQuerySearch = page.getByLabel( 'Custom Query Search' );
+
+			// Search for "Unique" in the default query
+			await defaultQuerySearch.fill( 'Unique' );
+
+			// Verify that the URL has been updated with the search parameter
+			await expect( page ).toHaveURL( /instant-search=Unique/ );
+
+			// Verify that the custom query search input has no value
+			await expect( customQuerySearch ).toHaveValue( '' );
+
+			// Verify that the default query has only one post which is the "Unique" post
+			const defaultQueryPosts = page
+				.getByTestId( 'default-query' )
+				.getByRole( 'heading', { level: 3 } );
+			await expect( defaultQueryPosts ).toHaveCount( 1 );
+			await expect( defaultQueryPosts ).toContainText( 'Unique Post' );
+
+			// Verify that the custom query shows exactly 2 posts: First Test Post and Second Test Post
+			const customQuery = page.getByTestId( 'custom-query' );
+			const posts = customQuery.getByRole( 'heading', { level: 3 } );
+			await expect( posts ).toHaveCount( 2 );
+			await expect( posts ).toContainText( [
+				'First Test Post',
+				'Second Test Post',
+			] );
+
+			// Search for "Third" in the custom query
+			await customQuerySearch.fill( 'Third' );
+
+			// Verify that the URL has been updated with the search parameter
+			await expect( page ).toHaveURL(
+				/instant-search=Unique&instant-search-2222=Third/
+			);
+
+			// Verify that the default query search input still has "Unique"
+			await expect( defaultQuerySearch ).toHaveValue( 'Unique' );
+
+			// Verify that the default query has only one post which is the "Unique" post
+			await expect( defaultQueryPosts ).toHaveCount( 1 );
+			await expect( defaultQueryPosts ).toContainText( 'Unique Post' );
+
+			// Verify that the custom query has only one post which is the "Third Test Post"
+			const customQueryPosts = page
+				.getByTestId( 'custom-query' )
+				.getByRole( 'heading', { level: 3 } );
+			await expect( customQueryPosts ).toHaveCount( 1 );
+			await expect( customQueryPosts ).toContainText( 'Third Test Post' );
+
+			// Clear default query search
+			await defaultQuerySearch.fill( '' );
+			await expect( page ).not.toHaveURL( /instant-search=Unique/ );
+			await expect( page ).toHaveURL( /instant-search-2222=Third/ );
+
+			// Clear custom query search
+			await customQuerySearch.fill( '' );
+			await expect( page ).not.toHaveURL( /instant-search-2222=Third/ );
 		} );
 	} );
 } );
