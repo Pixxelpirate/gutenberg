@@ -2411,7 +2411,7 @@ function getDerivedBlockEditingModesForTree(
 				}
 			}
 
-			if ( blockName && isContentBlock( blockName, clientId ) ) {
+			if ( blockName && isContentBlock( blockName ) ) {
 				derivedBlockEditingModes.set( clientId, 'contentOnly' );
 				return;
 			}
