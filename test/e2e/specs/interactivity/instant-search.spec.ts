@@ -718,4 +718,89 @@ test.describe( 'Instant Search', () => {
 			).toBeHidden();
 		} );
 	} );
+
+	test.describe( 'Multiple Inherited (Default) Queries', () => {
+		test.beforeEach( async ( { page } ) => {
+			// Navigate to the home page
+			await page.goto( '/' );
+		} );
+
+		test.beforeAll( async ( { requestUtils } ) => {
+			await requestUtils.updateTemplate( 'wp_template', {
+				slug: 'home',
+				content: `
+<!-- wp:query {"enhancedPagination":true,"queryId":1111,"query":{"inherit":true,"perPage":2,"order":"desc","orderBy":"date"}} -->
+	<div class="wp-block-query" data-testid="default-query-1">
+		<!-- wp:search {"label":"1st-instant-search","buttonText":"Search"} /-->
+			<!-- wp:post-template -->
+				<!-- wp:post-title {"level":3} /-->
+				<!-- wp:post-excerpt /-->
+			<!-- /wp:post-template -->
+			<!-- wp:query-pagination -->
+				<!-- wp:query-pagination-previous /-->
+				<!-- wp:query-pagination-numbers /-->
+				<!-- wp:query-pagination-next /-->
+			<!-- /wp:query-pagination -->
+			<!-- wp:query-no-results -->
+				<!-- wp:paragraph -->
+				<p>No results found.</p>
+				<!-- /wp:paragraph -->
+			<!-- /wp:query-no-results -->
+		</div>
+<!-- /wp:query -->
+
+
+<!-- wp:query {"enhancedPagination":true,"queryId":2222,"query":{"inherit":true,"perPage":2,"order":"desc","orderBy":"date"}} -->
+	<div class="wp-block-query" data-testid="default-query-2">
+		<!-- wp:search {"label":"2nd-instant-search","buttonText":"Search"} /-->
+			<!-- wp:post-template -->
+				<!-- wp:post-title {"level":3} /-->
+				<!-- wp:post-excerpt /-->
+			<!-- /wp:post-template -->
+			<!-- wp:query-pagination -->
+				<!-- wp:query-pagination-previous /-->
+				<!-- wp:query-pagination-numbers /-->
+				<!-- wp:query-pagination-next /-->
+			<!-- /wp:query-pagination -->
+			<!-- wp:query-no-results -->
+				<!-- wp:paragraph -->
+				<p>No results found.</p>
+				<!-- /wp:paragraph -->
+			<!-- /wp:query-no-results -->
+		</div>
+<!-- /wp:query -->`,
+			} );
+		} );
+
+		test( 'should keep the search state in sync across multiple inherited queries', async ( {
+			page,
+		} ) => {
+			// Get search inputs
+			const firstQuerySearch = page.getByLabel( '1st-instant-search' );
+			const secondQuerySearch = page.getByLabel( '2nd-instant-search' );
+
+			// Search for "Unique" in the first query
+			await firstQuerySearch.fill( 'Unique' );
+
+			// Verify that the URL has been updated with the search parameter
+			await expect( page ).toHaveURL( /instant-search=Unique/ );
+
+			// Verify that the second query search input has the same value
+			await expect( secondQuerySearch ).toHaveValue( 'Unique' );
+
+			// Verify that the first query has only one post which is the "Unique" post
+			const firstQueryPosts = page
+				.getByTestId( 'default-query-1' )
+				.getByRole( 'heading', { level: 3 } );
+			await expect( firstQueryPosts ).toHaveCount( 1 );
+			await expect( firstQueryPosts ).toContainText( 'Unique Post' );
+
+			// Verify that the second query also has only one post which is the "Unique" post
+			const secondQueryPosts = page
+				.getByTestId( 'default-query-2' )
+				.getByRole( 'heading', { level: 3 } );
+			await expect( secondQueryPosts ).toHaveCount( 1 );
+			await expect( secondQueryPosts ).toContainText( 'Unique Post' );
+		} );
+	} );
 } );
