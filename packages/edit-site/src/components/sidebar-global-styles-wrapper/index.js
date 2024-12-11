@@ -14,15 +14,18 @@ import { addQueryArgs } from '@wordpress/url';
 import GlobalStylesUI from '../global-styles/ui';
 import Page from '../page';
 import { unlock } from '../../lock-unlock';
-import StyleBook from '../style-book';
-import { STYLE_BOOK_COLOR_GROUPS } from '../style-book/constants';
+// import StyleBook from '../style-book';
+// import { STYLE_BOOK_COLOR_GROUPS } from '../style-book/constants';
 
 const { useLocation, useHistory } = unlock( routerPrivateApis );
 
 const GlobalStylesPageActions = ( {
 	isStyleBookOpened,
 	setIsStyleBookOpened,
+	path,
 } ) => {
+	const stylebookPath = 'styles-stylebook';
+	const history = useHistory();
 	return (
 		<ToggleControl
 			__nextHasNoMarginBottom
@@ -30,6 +33,11 @@ const GlobalStylesPageActions = ( {
 			checked={ isStyleBookOpened }
 			onChange={ ( newValue ) => {
 				setIsStyleBookOpened( newValue );
+				const updatedPath = newValue
+					? path.replace( 'styles', stylebookPath )
+					: path.replace( stylebookPath, 'styles' );
+				// Navigate to the updated path.
+				history.navigate( updatedPath );
 			} }
 		/>
 	);
@@ -37,9 +45,11 @@ const GlobalStylesPageActions = ( {
 
 export default function GlobalStylesUIWrapper() {
 	const { path, query } = useLocation();
+
 	const history = useHistory();
-	const { canvas = 'view' } = query;
-	const [ isStyleBookOpened, setIsStyleBookOpened ] = useState( false );
+	const [ isStyleBookOpened, setIsStyleBookOpened ] = useState(
+		path.includes( 'styles-stylebook' )
+	);
 	const isMobileViewport = useViewportMatch( 'medium', '<' );
 	const [ section, onChangeSection ] = useMemo( () => {
 		return [
@@ -62,6 +72,7 @@ export default function GlobalStylesUIWrapper() {
 						<GlobalStylesPageActions
 							isStyleBookOpened={ isStyleBookOpened }
 							setIsStyleBookOpened={ setIsStyleBookOpened }
+							path={ path }
 						/>
 					) : null
 				}
@@ -73,7 +84,7 @@ export default function GlobalStylesUIWrapper() {
 					onPathChange={ onChangeSection }
 				/>
 			</Page>
-			{ canvas === 'view' && isStyleBookOpened && (
+			{ /* { canvas === 'view' && isStyleBookOpened && (
 				<StyleBook
 					enableResizing={ false }
 					showCloseButton={ false }
@@ -111,7 +122,7 @@ export default function GlobalStylesUIWrapper() {
 						);
 					} }
 				/>
-			) }
+			) } */ }
 		</>
 	);
 }

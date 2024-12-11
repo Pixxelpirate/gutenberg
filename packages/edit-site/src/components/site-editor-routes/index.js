@@ -21,6 +21,7 @@ import { templateItemRoute } from './template-item';
 import { pagesRoute } from './pages';
 import { pageItemRoute } from './page-item';
 import { stylebookRoute } from './stylebook';
+import { stylesStylebookRoute } from './styles-stylebook';
 
 const routes = [
 	pageItemRoute,
@@ -35,6 +36,7 @@ const routes = [
 	stylesRoute,
 	homeRoute,
 	stylebookRoute,
+	stylesStylebookRoute,
 ];
 
 export function useRegisterSiteEditorRoutes() {
