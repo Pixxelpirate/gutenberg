@@ -84,9 +84,6 @@ export default function DisableNonPageContentBlocks() {
 					setBlockEditingMode( clientId, 'contentOnly' );
 				}
 			}
-			for ( const clientId of disabledIds ) {
-				setBlockEditingMode( clientId, 'disabled' );
-			}
 		} );
 
 		return () => {
@@ -98,7 +95,7 @@ export default function DisableNonPageContentBlocks() {
 				}
 			} );
 		};
-	}, [ templateParts, isNavigationMode, registry, disabledIds ] );
+	}, [ templateParts, isNavigationMode, registry ] );
 
 	useEffect( () => {
 		const { setBlockEditingMode, unsetBlockEditingMode } =
