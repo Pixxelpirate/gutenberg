@@ -98,8 +98,7 @@ async function configureWordPress( environment, config, spinner ) {
 	if ( isMultisite ) {
 		// Using a subshell with `exec` was the best tradeoff I could come up
 		// with between readability of this source and compatibility with the
-		// way that all strings in `setupCommands` are later joined with ' &&
-		// '.
+		// way that all strings in `setupCommands` are later joined with '&&'.
 		setupCommands.push(
 			`(
 exec > /var/www/html/.htaccess
