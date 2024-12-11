@@ -1964,8 +1964,14 @@ export function temporarilyEditingFocusModeRevert( state = '', action ) {
 export function blockEditingModes( state = new Map(), action ) {
 	switch ( action.type ) {
 		case 'SET_BLOCK_EDITING_MODE':
+			if ( state.get( action.clientId ) === action.mode ) {
+				return state;
+			}
 			return new Map( state ).set( action.clientId, action.mode );
 		case 'UNSET_BLOCK_EDITING_MODE': {
+			if ( ! state.has( action.clientId ) ) {
+				return state;
+			}
 			const newState = new Map( state );
 			newState.delete( action.clientId );
 			return newState;
