@@ -86,7 +86,6 @@ async function configureWordPress( environment, config, spinner ) {
 		// Ignore error.
 	}
 
-	// FIXME
 	const isMultisite = config.env[ environment ].multisite;
 
 	const installMethod = isMultisite ? 'multisite-install' : 'install';
