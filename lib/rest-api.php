@@ -45,8 +45,7 @@ function gutenberg_register_archive_link_field() {
 		array(
 			'get_callback'    => function ( $post_object ) {
 				if ( isset( $post_object['has_archive'] ) && $post_object['has_archive'] ) {
-					$post_type = $post_object['slug'];
-					$archive_link = get_post_type_archive_link( $post_type );
+					$archive_link = get_post_type_archive_link( $post_object['slug'] );
 					return $archive_link ? $archive_link : '';
 				}
 				return '';
